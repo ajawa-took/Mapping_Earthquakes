@@ -3,9 +3,10 @@ console.log("I am logic.js , what do you want?");
 
 const dom = [55.7428868441541, 37.615418005983436];
 const flyover = [40.7, -94.5];
+const moduleCenter = [30,30];
 
 // Create the map object with a center and zoom level.
-let map = L.map('mapid').setView(dom, 15);
+let map = L.map('mapid').setView(dom, 2);
 
 
 
@@ -27,10 +28,18 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
     accessToken: API_KEY
 });
 
+
 // Then we add our 'graymap' tile layer to the map.
 streets.addTo(map);
 
+// we get data from github instead of local file - why?
+let airportData = "https://raw.githubusercontent.com/<GitHub_name>/Mapping_Earthquakes/main/majorAirports.json";
 
+d3.json(airportData).then(function(data) {
+    console.log(data);
+  // Creating a GeoJSON layer with the retrieved data.
+  L.geoJSON(data).addTo(map);
+});
 
 
 
