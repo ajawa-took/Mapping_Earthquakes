@@ -1,13 +1,27 @@
 // Add console.log to check to see if our code is working.
 console.log("I am logic.js , what do you want?");
 
-const dom = [55.7428868441541, 37.615418005983436];
-const flyover = [40.7, -94.5];
+const mapCenter = [37.5, -122.5]
+// [55.7428868441541, 37.615418005983436];
 
 // Create the map object with a center and zoom level.
-let map = L.map('mapid').setView(dom, 15);
+let map = L.map('mapid').setView(mapCenter, 10);
 
-
+// adding GeoJSON data from data.js
+// one-feature easy way: L.geoJSON(sanFranAirport).addTo(map);
+L.geoJSON(sanFranAirport, {
+    // // We turn each feature into a marker on the map.
+    // pointToLayer: function(feature, latlng) {
+    //   console.log(feature);
+    //   return L.marker(latlng)
+    //   .bindPopup("<h2>" + feature.properties.city + "</h2>");
+    // }
+    onEachFeature: function(feature, layer) {
+        console.log(layer);
+        layer.bindPopup("Airport code: " + feature.properties.faa +
+            "<hr> Airport name: " + feature.properties.name);
+       }
+  }).addTo(map);
 
 // another way to load request tiles
 // // We create the tile layer that will be the background of our map.
