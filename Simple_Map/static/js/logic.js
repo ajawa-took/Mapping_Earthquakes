@@ -33,14 +33,30 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 streets.addTo(map);
 
 // we get data from github instead of local file - why?
-let airportData = "https://raw.githubusercontent.com/<GitHub_name>/Mapping_Earthquakes/main/majorAirports.json";
+let airportData = "https://raw.githubusercontent.com/ajawa-took/Mapping_Earthquakes/main/majorAirports.json";
+// let airportData = "static/js/majorAirports.json";
 
-d3.json(airportData).then(function(data) {
+
+// beware, beware: .then only works with d3.v5 or higher!!
+ d3.json(airportData).then(function(data) {
     console.log(data);
-  // Creating a GeoJSON layer with the retrieved data.
-  L.geoJSON(data).addTo(map);
+    // Creating a GeoJSON layer with the retrieved data.
+  L.geoJSON(data)
+   .bindPopup(function (layer) {
+    return "Airport Code: " + layer.feature.properties.faa +
+    "<hr> Airport name: " + layer.feature.properties.name})
+   .addTo(map);
 });
 
+//      the version below from activities, without "promises" and "then",
+//      "works" with older versions, but
+//      it executes before the data is retrieved, so nothing logged,
+//      nothing added to map, even with L.geoJSON instead of createFeatures
+// d3.json(fireDistrictsLink, function(data) {  
+//     console.log(data);
+//     // Send the data.features object to the createFeatures function 
+//     createFeatures(data.features);  
+//   });
 
 
 
