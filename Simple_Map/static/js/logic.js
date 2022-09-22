@@ -22,6 +22,8 @@ let map = L.map('mapid').setView(dom, 2);
 // });
  
 // We create the tile layer that will be the background of our map.
+// styles module want: 'streets-v11', 'dark-v10';
+
 let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
@@ -29,8 +31,10 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 });
 
 
+
 // Then we add our 'graymap' tile layer to the map.
-streets.addTo(map);
+// replacing the following with layer-control
+// streets.addTo(map);
 
 // we get data from github instead of local file - why?
 let airportData = "https://raw.githubusercontent.com/ajawa-took/Mapping_Earthquakes/main/majorAirports.json";
