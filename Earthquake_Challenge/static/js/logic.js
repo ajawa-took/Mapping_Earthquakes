@@ -30,28 +30,21 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
     accessToken: API_KEY
 });
 
+let baseMaps = {"Streets": streets};
 
+// Create the earthquake layer for our map.
+let earthquakes = new L.layerGroup();
 
-// Then we add our 'graymap' tile layer to the map.
-// replacing the following with layer-control
-// streets.addTo(map);
+// We define an object that contains the overlays.
+// This overlay will be visible all the time.
+let overlays = {
+  Earthquakes: earthquakes
+};
 
-// // we get data from github instead of local file - why?  
-// // because js in browser has no permissions for local files!
-// let airportData = "https://raw.githubusercontent.com/ajawa-took/Mapping_Earthquakes/main/Simple_Map/static/js/majorAirports.json";
-// // let airportData = "static/js/majorAirports.json";
+// Then we add a control to the map that will allow the user to change
+// which layers are visible.
+L.control.layers(baseMaps, overlays).addTo(map);
 
-
-// // beware, beware: .then only works with d3.v5 or higher!!
-//  d3.json(airportData).then(function(data) {
-//     console.log(data);
-//     // Creating a GeoJSON layer with the retrieved data.
-//   L.geoJSON(data)
-//    .bindPopup(function (layer) {
-//     return "Airport Code: " + layer.feature.properties.faa +
-//     "<hr> Airport name: " + layer.feature.properties.name})
-//    .addTo(map);
-// });
 
 let quakes_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
@@ -124,11 +117,12 @@ d3.json(quakes_url).then(function(data) {
                 "<br>Date: " + new Date(feature.properties.time).toLocaleDateString('en-US'));
                 }
             }
-            ).addTo(map);
+            ).addTo(earthquakes);
+  earthquakes.addTo(map);
 });
 
 
-streets.addTo(map);
+// streets.addTo(map);
 
 
 
