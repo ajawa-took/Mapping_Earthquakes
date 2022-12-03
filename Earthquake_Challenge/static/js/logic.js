@@ -1,5 +1,7 @@
-// Add console.log to check to see if our code is working.
+// Add console.log to check to see if our code is even getting called.
 console.log("I am logic.js , what do you want?");
+
+//                      ALL FIXED STUFF, INDEPENDENT OF JSONs
 
 const dom = [55.7428868441541, 37.615418005983436];
 const flyover = [40.7, -94.5];
@@ -8,53 +10,33 @@ const moduleCenter = [30,30];
 // Create the map object with a center and zoom level.
 let map = L.map('mapid').setView(dom, 2);
 
-
-
-// another way to load request tiles
-// // We create the tile layer that will be the background of our map.
-// let streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-//     maxZoom: 18,
-//     id: 'mapbox/streets-v11',
-//     tileSize: 512,
-//     zoomOffset: -1,
-//     accessToken: API_KEY
-// });
- 
-// We create the tile layer that will be the background of our map.
-// styles module want: 'streets-v11', 'dark-v10';
-
+// We create two tile layers that will be the background of our map. styles streets-v11, satellite-v9
 let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
 });
-
 let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
 });
 
+// collect the two background tile-layers that user will choose from
 let baseMaps = {"Streets": streets, "Satellite": satelliteStreets };
 
 // Create the earthquake layer for our map.
 let earthquakes = new L.layerGroup();
 
 // We define an object that contains the overlays.
-// This overlay will be visible all the time.
-let overlays = {
-  Earthquakes: earthquakes
-};
+let overlays = {  Earthquakes: earthquakes };
 
-// Then we add a control to the map that will allow the user to change
-// which layers are visible.
+// Then we add a control to the map that will allow the user to change which layers are visible.
 L.control.layers(baseMaps, overlays).addTo(map);
 
-// Now we build a legend
+// next three sttaements build a legend; beware stuff is also needed in css file!
 // Create a legend control object.
 let legend = L.control({  position: "bottomright" });
-
 // Then add all the details for the legend.
 legend.onAdd = function() {
   let div = L.DomUtil.create("div", "info legend");
@@ -69,20 +51,21 @@ legend.onAdd = function() {
   }
   return div;
 };
-
+// add legend to map
 legend.addTo(map);
 
 
+//                      NOW WE GET EARTHQUAKES JSON AND DO STUFF WITH IT
+
 let quakes_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
-// Retrieve the earthquake GeoJSON data.
+// Retrieve the earthquake GeoJSON data, then add customized markers to a geoJSON layer,
+// add that geoJSON layer to the earthquakes layer, and add the earthquakes layer to map
 d3.json(quakes_url).then(function(data) {
 
   // why are we defining these functions inside here? weird
 
-  // This function returns the style data for each of the earthquakes we plot on
-  // the map. We pass the magnitude of the earthquake into a function
-  // to calculate the radius.
+  // This function returns the style data for each of the earthquakes we plot on the map. 
   function styleInfo(feature) {
     return {
       opacity: 1,
@@ -124,29 +107,31 @@ d3.json(quakes_url).then(function(data) {
     return "#98ee00";
   }  
 
-  // // Creating a GeoJSON layer with the retrieved data, simplest
-  // L.geoJSON(data).addTo(map);
-  // Less simple: turn each feature into a circleMarker on the map.
+  // Creating a GeoJSON layer with the retrieved data
+  // basic syntax: L.geoJSON(stuff_to_plot, {dictionary of options whose values are functions})
   L.geoJSON(data, 
-            {pointToLayer: function(feature, latlng) {
-              console.log(data);
-              return L.circleMarker(latlng);
-              },
-            // We set the style for each circleMarker using our styleInfo function.
-            style: styleInfo,
-            // We create a popup for each circleMarker to display the magnitude and
-            //  location of the earthquake after the marker has been created and styled.
-            onEachFeature: function(feature, layer) {
+            {
+              // this first option makes circles and logs data in colsole for debugging
+              pointToLayer: function(feature, latlng) {
+                console.log(data);
+                return L.circleMarker(latlng);
+                },
+              // this second option changes circle colors and sizes styleInfo function.
+              style: styleInfo,
+              // this third option adds pop-ups to markers
+              onEachFeature: function(feature, layer) {
                 layer.bindPopup("Magnitude: " + feature.properties.mag + 
                 "<br>Location: " + feature.properties.place+
                 "<br>Date: " + new Date(feature.properties.time).toLocaleDateString('en-US'));
                 }
             }
             ).addTo(earthquakes);
+            // the line above adds the markers to the earthquakes layer
+  // and then we add that earthquakes layer to the map
   earthquakes.addTo(map);
 });
 
-
+// without the next line, map first displays with no tiles; not sure this is the right way to solve that
 streets.addTo(map);
 
 
