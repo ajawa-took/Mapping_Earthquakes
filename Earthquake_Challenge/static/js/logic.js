@@ -30,7 +30,13 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
     accessToken: API_KEY
 });
 
-let baseMaps = {"Streets": streets};
+let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    accessToken: API_KEY
+});
+
+let baseMaps = {"Streets": streets, "Satellite": satelliteStreets };
 
 // Create the earthquake layer for our map.
 let earthquakes = new L.layerGroup();
@@ -122,7 +128,7 @@ d3.json(quakes_url).then(function(data) {
 });
 
 
-// streets.addTo(map);
+streets.addTo(map);
 
 
 
