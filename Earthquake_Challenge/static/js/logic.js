@@ -36,33 +36,33 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 // replacing the following with layer-control
 // streets.addTo(map);
 
-// we get data from github instead of local file - why?  
-// because js in browser has no permissions for local files!
-let airportData = "https://raw.githubusercontent.com/ajawa-took/Mapping_Earthquakes/main/majorAirports.json";
-// let airportData = "static/js/majorAirports.json";
+// // we get data from github instead of local file - why?  
+// // because js in browser has no permissions for local files!
+// let airportData = "https://raw.githubusercontent.com/ajawa-took/Mapping_Earthquakes/main/Simple_Map/static/js/majorAirports.json";
+// // let airportData = "static/js/majorAirports.json";
 
 
-// beware, beware: .then only works with d3.v5 or higher!!
- d3.json(airportData).then(function(data) {
-    console.log(data);
-    // Creating a GeoJSON layer with the retrieved data.
-  L.geoJSON(data)
-   .bindPopup(function (layer) {
-    return "Airport Code: " + layer.feature.properties.faa +
-    "<hr> Airport name: " + layer.feature.properties.name})
-   .addTo(map);
+// // beware, beware: .then only works with d3.v5 or higher!!
+//  d3.json(airportData).then(function(data) {
+//     console.log(data);
+//     // Creating a GeoJSON layer with the retrieved data.
+//   L.geoJSON(data)
+//    .bindPopup(function (layer) {
+//     return "Airport Code: " + layer.feature.properties.faa +
+//     "<hr> Airport name: " + layer.feature.properties.name})
+//    .addTo(map);
+// });
+
+let quakes_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
+
+// Retrieve the earthquake GeoJSON data.
+d3.json(quakes_url).then(function(data) {
+  // Creating a GeoJSON layer with the retrieved data.
+  L.geoJSON(data).addTo(map);
 });
 
-//      the version below from activities, without "promises" and "then",
-//      "works" with older versions, but
-//      it executes before the data is retrieved, so nothing logged,
-//      nothing added to map, even with L.geoJSON instead of createFeatures
-// d3.json(fireDistrictsLink, function(data) {  
-//     console.log(data);
-//     // Send the data.features object to the createFeatures function 
-//     createFeatures(data.features);  
-//   });
 
+streets.addTo(map);
 
 
 

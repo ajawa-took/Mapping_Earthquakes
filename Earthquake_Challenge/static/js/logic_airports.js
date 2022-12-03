@@ -38,7 +38,7 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 
 // we get data from github instead of local file - why?  
 // because js in browser has no permissions for local files!
-let airportData = "https://raw.githubusercontent.com/ajawa-took/Mapping_Earthquakes/main/majorAirports.json";
+let airportData = "https://raw.githubusercontent.com/ajawa-took/Mapping_Earthquakes/main/Simple_Map/static/js/majorAirports.json";
 // let airportData = "static/js/majorAirports.json";
 
 
@@ -53,16 +53,8 @@ let airportData = "https://raw.githubusercontent.com/ajawa-took/Mapping_Earthqua
    .addTo(map);
 });
 
-//      the version below from activities, without "promises" and "then",
-//      "works" with older versions, but
-//      it executes before the data is retrieved, so nothing logged,
-//      nothing added to map, even with L.geoJSON instead of createFeatures
-// d3.json(fireDistrictsLink, function(data) {  
-//     console.log(data);
-//     // Send the data.features object to the createFeatures function 
-//     createFeatures(data.features);  
-//   });
 
+streets.addTo(map);
 
 
 
